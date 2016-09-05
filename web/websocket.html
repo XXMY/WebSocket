@@ -44,7 +44,7 @@
 	//info("<div class='alert alert-info' role='alert'>WebSocket is opening...</div>");
 	function webSocketConnect(){
 		//webSocket = new WebSocket("ws://echo.websocket.org/echo");
-		webSocket = new WebSocket("ws://localhost:8081/hello");
+		webSocket = new WebSocket("ws://localhost:8080/echo");
 		webSocket.onopen = function(){
 			while(true){
 				if(webSocket.readyState === WebSocket.OPEN){
