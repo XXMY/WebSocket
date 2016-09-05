@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+    <link rel="stylesheet" type="text/css" href="./css/bootstrap.css" />
+    <script type="text/javascript" src="./js/jquery.js"></script>
+    <script src="./js/sockjs-0.3.4.js"></script>
+    <script src="http://cdn.bootcss.com/stomp.js/2.3.3/stomp.js"></script>
+</head>
+<body>
+
+<div class="container" style="position:relative;width:50%;">
+    <div class="text-center">
+        <div id="information" style="width:100%;position:absolute;top:-105px;">
+ 
+        </div>
+    </div>
+</div>
+
+<div class="container" style="position:relative;top:80px;width:50%;">
+
+    <div  class="text-center">
+        <h2>WebSocket Client</h2>
+        <div class="text-right">
+            <button id="connectBtn" class="btn btn-warning" onclick="webSocketConnect()">Connect</button>
+            <button id="closeBtn" class="btn btn-warning" onclick="webSocketClose()">Close</button>
+        </div>
+        <br/>
+        <textarea id="messageBox" class="form-control" style="height:200px;" placeholder="No message received..."></textarea>
+        <br/>
+        <input id="contentBox" class="form-control" placeholder="Input message here"></textarea>
+        <br/>
+        <div class="text-right">
+            <button class="btn btn-success" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+</div>
+<script>
+    var webSocket;
+    var CLIENT_MSG = 1;
+    var SERVER_MSG = 2;
+	var stompClient;
+	
+	function setConnected(connected){
+		$("#connectBtn").attr("disabled",connected);
+		$("#closeBtn").attr("disabled",!connected);
+		if(stompClient != null){
+			var infoBar = "<div class='alert alert-success' role='alert'>Connection opening! </div>";
+		}else{
+			var infoBar = "<div class='alert alert-success' role='alert'>Connection closing! </div>";
+		}
+		
+		info(infoBar);
+	}
+	
+	function showGreeting(content){
+		var infoBar = "<div class='alert alert-success' role='alert'>Receiving from Server! </div>";
+		info(infoBar);
+		log(content,SERVER_MSG);
+	}
+	
+    //info("<div class='alert alert-info' role='alert'>WebSocket is opening...</div>");
+    function webSocketConnect(){
+		
+        var socket = new SockJS("/spring");
+        stompClient = Stomp.over(socket);
+		
+        stompClient.connect({}, function(frame) {
+			setConnected(true);
+			// 订阅后才能接受来自服务端的消息
+			stompClient.subscribe('/topic/greetings', function(greeting){
+				showGreeting(JSON.parse(greeting.body).content);
+			});
+		});
+    }
+
+    function webSocketClose(){
+		if("undefined" != typeof(stompClient) || stompClient != null){
+			stompClient.disconnect();
+		}
+		stompClient == null;
+        setConnected(false);
+    }
+
+    function sendMessage(){
+        var message = $("#contentBox").val();
+        log(message,CLIENT_MSG);
+        stompClient.send("/app/spring", {}, JSON.stringify({ 'message': message }));
+    }
+
+    function info(infoBar){
+        $("#information").animate({top:'-105px'},1000);
+        $("#information").empty();
+        $("#information").append(infoBar);
+        $("#information").animate({top:'0px'},1000);
+    }
+
+    function log(message,type){
+        if("undefined" != typeof(type)){
+            if(type == CLIENT_MSG){
+                message = "Client: " + message;
+            }else if(type == SERVER_MSG){
+                message = "Server: " + message;
+            }
+        }
+        console.log(message);
+        $("#messageBox").append(message+"\n");
+    }
+</script>
+</body>
+</html>
