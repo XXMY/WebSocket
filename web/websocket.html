@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+	<link rel="stylesheet" type="text/css" href="./css/bootstrap.css" />
+	<script type="text/javascript" src="./js/jquery.js"></script>
+</head>
+<body>
+	
+	<div class="container" style="position:relative;width:50%;">
+		<div class="text-center">
+			<div id="information" style="width:100%;position:absolute;top:-105px;">
+				
+			</div>
+		</div>
+	</div>
+	
+	<div class="container" style="position:relative;top:80px;width:50%;">
+		
+		<div  class="text-center">
+			<!-- <div id="information" style="position:absolute;top:-105px;">
+				
+			</div> -->
+			<h2>WebSocket Client</h2>
+			<div class="text-right">
+				<button class="btn btn-warning" onclick="webSocketConnect()">Connect</button>
+				<button class="btn btn-warning" onclick="webSocketClose()">Close</button>
+			</div>
+			<br/>
+			<textarea id="messageBox" class="form-control" style="height:200px;" placeholder="No message received..."></textarea>
+			<br/>
+			<input id="contentBox" class="form-control" placeholder="Input message here"></textarea>
+			<br/>
+			<div class="text-right">
+				<button class="btn btn-success" onclick="sendMessage()">Send</button>
+			</div>
+		</div>
+	</div>
+<script>
+	var webSocket;
+	var CLIENT_MSG = 1;
+	var SERVER_MSG = 2;
+	//info("<div class='alert alert-info' role='alert'>WebSocket is opening...</div>");
+	function webSocketConnect(){
+		//webSocket = new WebSocket("ws://echo.websocket.org/echo");
+		webSocket = new WebSocket("ws://localhost:8081/hello");
+		webSocket.onopen = function(){
+			while(true){
+				if(webSocket.readyState === WebSocket.OPEN){
+					var information = "Server connected!";
+					var infoBar = "<div class='alert alert-info' role='alert'>"+ information +"</div>";
+					info(infoBar);
+					break;
+				}
+				
+			}
+			
+		}
+		
+		webSocket.onmessage = function(evt){
+			var infoBar = "<div class='alert alert-success' role='alert'>Receiving from Server! </div>";
+			info(infoBar);
+			log(evt.data,SERVER_MSG);
+		}
+		
+		webSocket.onclose = function(evt){
+			while(true){
+				if(webSocket.readyState === WebSocket.CLOSED){
+					var information = "Connection closed!";
+					var infoBar = "<div class='alert alert-warning' role='alert'>"+ information +"</div>";
+					info(infoBar);
+					break;
+				}
+			}
+			
+		}
+		
+		webSocket.onerror = function(evt) {
+			var infoBar = "<div class='alert alert-danger' role='alert'>WebSocket occurred an error!</div>";
+			info(infoBar);
+			log("Occurred an error!");
+		}
+	}
+	
+	function webSocketClose(){
+		if(webSocket.readyState === WebSocket.OPEN){
+			webSocket.close();
+		}
+	}
+	
+	function sendMessage(){
+		var message = $("#contentBox").val();
+		log(message,CLIENT_MSG);
+		webSocket.send(message);
+	}
+	
+	function info(infoBar){
+		$("#information").animate({top:'-105px'},1000);
+		$("#information").empty();
+		$("#information").append(infoBar);
+		$("#information").animate({top:'0px'},1000);
+	}
+	
+	function log(message,type){
+		if("undefined" != typeof(type)){
+			if(type == CLIENT_MSG){
+				message = "Client: " + message;
+			}else if(type == SERVER_MSG){
+				message = "Server: " + message;
+			}
+		}
+		console.log(message);
+		$("#messageBox").append(message+"\n");
+	}
+</script>
+</body>
+</html>
