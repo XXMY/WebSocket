@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DrawBoard</title>
+</head>
+<body>
+<canvas id="canvas" width="800px" height="500px" style="border:1px solid"/>
+<script>
+    function rgb(color) {
+        return "rgba(" + color[0] + "," + color[1] + ","
+                + color[2] + "," + color[3] + ")";
+    }
+    function Path(type, color, thickness, x1, y1, x2, y2, lastInChain) {
+        this.type = type;
+        this.color = color;
+        this.thickness = thickness;
+        this.x1 = x1;
+        this.y1 = y1;
+        this.x2 = x2;
+        this.y2 = y2;
+        this.lastInChain = lastInChain;
+
+        function ellipse(ctx, x, y, w, h) {
+            /* Drawing a ellipse cannot be done directly in a
+             * CanvasRenderingContext2D - we need to use drawArc()
+             * in conjunction with scaling the context so that we
+             * get the needed proportion.
+             */
+            ctx.save();
+
+            // Translate and scale the context so that we can draw
+            // an arc at (0, 0) with a radius of 1.
+            ctx.translate(x + w / 2, y + h / 2);
+            ctx.scale(w / 2, h / 2);
+
+            ctx.beginPath();
+            ctx.arc(0, 0, 1, 0, Math.PI * 2, false);
+
+            ctx.restore();
+        }
+
+        this.draw = function(ctx) {
+            ctx.beginPath();
+            ctx.lineCap = "round";
+            ctx.lineWidth = thickness;
+            var style = rgb(color);
+            ctx.strokeStyle = style;
+
+            if (x1 == x2 && y1 == y2) {
+                // Always draw as arc to meet the behavior
+                // in Java2D.
+                ctx.fillStyle = style;
+                ctx.arc(x1, y1, thickness / 2.0, 0,
+                        Math.PI * 2.0, false);
+                ctx.fill();
+            } else {
+                if (type == 1 || type == 2) {
+                    // Draw a line.
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                    ctx.stroke();
+                } else if (type == 3) {
+                    // Draw a rectangle.
+                    if (x1 == x2 || y1 == y2) {
+                        // Draw as line
+                        ctx.moveTo(x1, y1);
+                        ctx.lineTo(x2, y2);
+                        ctx.stroke();
+                    } else {
+                        ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+                    }
+                } else if (type == 4) {
+                    // Draw a ellipse.
+                    ellipse(ctx, x1, y1, x2 - x1, y2 - y1);
+                    ctx.closePath();
+                    ctx.stroke();
+                }
+            }
+        };
+    }
+</script>
+<script>
+    var canvas = document.getElementById("canvas");
+    var canvasCxt = canvas.getContext("2d");
+
+</script>
+<script>
+    var show = false;
+    function mousePosition(e){
+        if(show){
+            console.log("(" + e.pageX + ", " + e.pageY + ")")
+            var path = new Path(1,[0,0,0,1],2,e.pageX,e.pageY,e.pageX+1,e.pageY+1,0);
+            path.draw(canvasCxt);
+            document.addEventListener("mousemove",mousePosition,false);
+            document.addEventListener("mouseup",mouseUp,false);
+        }
+    }
+    function mouseDown(e){
+        show = true;
+        console.log("(" + e.pageX + ", " + e.pageY + ")")
+        document.addEventListener("mousemove",mousePosition,false);
+    }
+    function mouseUp(e){
+        if(e.button === 0){
+            show = false;
+            document.removeEventListener("mousemove",mousePosition,false);
+            console.clear();
+        }
+    }
+    document.addEventListener("mousedown",mouseDown,false);
+
+
+
+
+
+</script>
+</body>
+</html>
