@@ -28,6 +28,17 @@
         <element id="directory" name="classes">
           <element id="module-output" name="WebSocket" />
         </element>
+        <element id="file-copy" path="$PROJECT_DIR$/web/WEB-INF/mvc-dispatcher-servlet.xml" />
+        <element id="file-copy" path="$PROJECT_DIR$/web/WEB-INF/web.xml" />
+      </element>
+      <element id="file-copy" path="$PROJECT_DIR$/web/drawboard.html" />
+      <element id="file-copy" path="$PROJECT_DIR$/web/index.html" />
+      <element id="file-copy" path="$PROJECT_DIR$/web/websocket.html" />
+      <element id="directory" name="css">
+        <element id="dir-copy" path="$PROJECT_DIR$/web/css" />
+      </element>
+      <element id="directory" name="js">
+        <element id="dir-copy" path="$PROJECT_DIR$/web/js" />
       </element>
     </root>
   </artifact>

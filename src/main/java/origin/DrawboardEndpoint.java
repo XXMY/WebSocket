@@ -18,22 +18,13 @@ package origin;
 
 import java.io.EOFException;
 
-import javax.websocket.CloseReason;
-import javax.websocket.Endpoint;
-import javax.websocket.EndpointConfig;
-import javax.websocket.MessageHandler;
-import javax.websocket.Session;
+import javax.websocket.*;
+import javax.websocket.server.ServerEndpoint;
 
-import org.apache.juli.logging.Log;
-import org.apache.juli.logging.LogFactory;
 import origin.wsmessages.StringWebsocketMessage;
 
-
-public final class DrawboardEndpoint extends Endpoint {
-
-    private static final Log log =
-            LogFactory.getLog(DrawboardEndpoint.class);
-
+@ServerEndpoint(value = "/drawboard")
+public final class DrawboardEndpoint{
 
     /**
      * Our room where players can join.
@@ -75,7 +66,7 @@ public final class DrawboardEndpoint extends Endpoint {
     private Room.Player player;
 
 
-    @Override
+    @OnOpen
     public void onOpen(Session session, EndpointConfig config) {
         // Set maximum messages size to 10.000 bytes.
         session.setMaxTextMessageBufferSize(10000);
@@ -101,7 +92,8 @@ public final class DrawboardEndpoint extends Endpoint {
                     }
 
                 } catch (RuntimeException ex) {
-                    log.error("Unexpected exception: " + ex.toString(), ex);
+                    System.err.println("Unexpected exception: " + ex.toString());
+                    ex.printStackTrace();
                 }
             }
         });
@@ -109,7 +101,7 @@ public final class DrawboardEndpoint extends Endpoint {
     }
 
 
-    @Override
+    @OnClose
     public void onClose(Session session, CloseReason closeReason) {
         Room room = getRoom(false);
         if (room != null) {
@@ -128,7 +120,8 @@ public final class DrawboardEndpoint extends Endpoint {
                             player = null;
                         }
                     } catch (RuntimeException ex) {
-                        log.error("Unexpected exception: " + ex.toString(), ex);
+                        System.err.println("Unexpected exception: " + ex.toString());
+                        ex.printStackTrace();
                     }
                 }
             });
@@ -137,7 +130,7 @@ public final class DrawboardEndpoint extends Endpoint {
 
 
 
-    @Override
+    @OnError
     public void onError(Session session, Throwable t) {
         // Most likely cause is a user closing their browser. Check to see if
         // the root cause is EOF and if it is ignore it.
@@ -152,14 +145,14 @@ public final class DrawboardEndpoint extends Endpoint {
             // Assume this is triggered by the user closing their browser and
             // ignore it.
         } else {
-            log.error("onError: " + t.toString(), t);
+            System.err.println("onError: " + t.toString());
+            t.printStackTrace();
         }
     }
 
 
 
-    private final MessageHandler.Whole<String> stringHandler =
-            new MessageHandler.Whole<String>() {
+    private final MessageHandler.Whole<String> stringHandler = new MessageHandler.Whole<String>() {
 
         @Override
         public void onMessage(final String message) {
@@ -206,7 +199,7 @@ public final class DrawboardEndpoint extends Endpoint {
 
                                 break;
                             }
-                        } catch (ParseException e) {
+                        } catch (DrawMessage.ParseException e) {
                             // Client sent invalid data
                             // Ignore, TODO: maybe close connection
                         } catch (RuntimeException e) {
@@ -218,7 +211,8 @@ public final class DrawboardEndpoint extends Endpoint {
                         }
 
                     } catch (RuntimeException ex) {
-                        log.error("Unexpected exception: " + ex.toString(), ex);
+                        System.err.println("Unexpected exception: " + ex.toString());
+                        ex.printStackTrace();
                     }
                 }
             });
