@@ -51,24 +51,24 @@ document.addEventListener("DOMContentLoaded", function() {
 
     var Console = {};
 
-/*    console.log = (function() {
-        var consoleContainer =
-            document.getElementById("console-container");
-        var console = document.createElement("div");
-        console.setAttribute("id", "console");
-        consoleContainer.appendChild(console);
+    /*    console.log = (function() {
+     var consoleContainer =
+     document.getElementById("console-container");
+     var console = document.createElement("div");
+     console.setAttribute("id", "console");
+     consoleContainer.appendChild(console);
 
-        return function(message) {
-            var p = document.createElement('p');
-            p.style.wordWrap = "break-word";
-            p.appendChild(document.createTextNode(message));
-            console.appendChild(p);
-            while (console.childNodes.length > 25) {
-                console.removeChild(console.firstChild);
-            }
-            console.scrollTop = console.scrollHeight;
-        }
-    })();*/
+     return function(message) {
+     var p = document.createElement('p');
+     p.style.wordWrap = "break-word";
+     p.appendChild(document.createTextNode(message));
+     console.appendChild(p);
+     while (console.childNodes.length > 25) {
+     console.removeChild(console.firstChild);
+     }
+     console.scrollTop = console.scrollHeight;
+     }
+     })();*/
 
 
     function Room(drawContainer) {
@@ -133,6 +133,9 @@ document.addEventListener("DOMContentLoaded", function() {
         var canvasDisplay = document.createElement("canvas");
         var canvasBackground = document.createElement("canvas");
         var canvasServerImage = document.createElement("canvas");
+        canvasDisplay.style="border-top-left-radius:20px;border-top-right-radius:20px";
+        canvasBackground.style="border-top-left-radius:20px;border-top-right-radius:20px";
+        canvasServerImage.style="border-top-left-radius:20px;border-top-right-radius:20px";
         var canvasArray = [canvasDisplay, canvasBackground,
             canvasServerImage];
         canvasDisplay.addEventListener("mousedown", function(e) {
@@ -496,12 +499,10 @@ document.addEventListener("DOMContentLoaded", function() {
             labelContainer.removeChild(placeholder);
             placeholder = undefined;
 
-            labelContainer.appendChild(
-                document.createTextNode("Number of Players: "));
-            labelContainer.appendChild(labelPlayerCount);
-
-
-            drawContainer.style.display = "block";
+            //alert("Number of Players: " + );
+            $("#onlineNumber").text(labelPlayerCount.wholeText);
+            $("#messageBox").append("<b style='color:green'>你已经进入对话.</b><br/>");
+            //drawContainer.style.display = "block";
             drawContainer.appendChild(canvasDisplay);
 
             drawContainer.appendChild(optionContainer);
@@ -528,8 +529,8 @@ document.addEventListener("DOMContentLoaded", function() {
             canvasDisplay.addEventListener("mousedown", canvasMouseDownHandler, false);
 
             canvasMouseMoveHandler = function(e) {
-                var mouseX = e.pageX - canvasDisplay.offsetLeft;
-                var mouseY = e.pageY - canvasDisplay.offsetTop;
+                var mouseX = e.pageX - canvasDisplay.offsetLeft-9;
+                var mouseY = e.pageY - canvasDisplay.offsetTop-70;
 
                 if (mouseDown) {
                     var drawType = availableDrawTypes[currentDrawTypeIndex];
@@ -620,7 +621,7 @@ document.addEventListener("DOMContentLoaded", function() {
             // Create color and thickness controls.
             var colorContainersBox = document.createElement("div");
             colorContainersBox.setAttribute("style",
-                "margin: 4px; border: 1px solid #bbb; border-radius: 3px;");
+                "margin: 4px; border: 1px solid #bbb; border-radius: 3px;background:white;");
             optionContainer.appendChild(colorContainersBox);
 
             colorContainers = new Array(3 * 3 * 3);
@@ -637,7 +638,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 colorContainer.setAttribute("style",
                     "margin: 3px; width: 18px; height: 18px; "
                     + "float: left; background-color: " + rgb(color));
-                colorContainer.style.border = '2px solid #000';
+                colorContainer.style.border = '1px solid #000';
                 colorContainer.addEventListener("mousedown", (function(ix) {
                     return function() {
                         setColor(ix);
@@ -653,18 +654,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
             var drawTypeContainersBox = document.createElement("div");
-            drawTypeContainersBox.setAttribute("style",
-                "float: right; margin-right: 3px; margin-top: 1px;");
+            drawTypeContainersBox.setAttribute("style","float: right; margin-right: 10px; margin-top: 1px;background:white;border-radius: 20px;");
             optionContainer.appendChild(drawTypeContainersBox);
 
             drawTypeContainers = new Array(availableDrawTypes.length);
             for (var i = 0; i < drawTypeContainers.length; i++) {
                 var drawTypeContainer = drawTypeContainers[i] =
                     document.createElement("div");
-                drawTypeContainer.setAttribute("style",
-                    "text-align: center; margin: 3px; padding: 0 3px;"
-                    + "height: 18px; float: left;");
-                drawTypeContainer.style.border = "2px solid #000";
+                drawTypeContainer.setAttribute("style","text-align: center; margin: 3px; padding: 0 0px;"+ "height: 20px; float: left;");
+                drawTypeContainer.style.border = "1px solid #000";
                 drawTypeContainer.appendChild(document.createTextNode(
                     String(availableDrawTypes[i].name)));
                 drawTypeContainer.addEventListener("mousedown", (function(ix) {
@@ -678,18 +676,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
             var thicknessContainersBox = document.createElement("div");
-            thicknessContainersBox.setAttribute("style",
-                "margin: 3px; border: 1px solid #bbb; border-radius: 3px;");
+            thicknessContainersBox.setAttribute("style", "margin: 3px; border: 1px solid #bbb; border-radius: 3px;background:white;border-radius: 20px;");
             optionContainer.appendChild(thicknessContainersBox);
 
             thicknessContainers = new Array(availableThicknesses.length);
             for (var i = 0; i < thicknessContainers.length; i++) {
                 var thicknessContainer = thicknessContainers[i] =
                     document.createElement("div");
-                thicknessContainer.setAttribute("style",
-                    "text-align: center; margin: 3px; width: 18px; "
-                    + "height: 18px; float: left;");
-                thicknessContainer.style.border = "2px solid #000";
+                thicknessContainer.setAttribute("style", "text-align: center; margin: 3px; width: 18px; "+ "height: 18px; float: left;");
+                thicknessContainer.style.border = "1px solid #000";
                 thicknessContainer.appendChild(document.createTextNode(
                     String(availableThicknesses[i])));
                 thicknessContainer.addEventListener("mousedown", (function(ix) {

@@ -1,19 +1,38 @@
+
 <!DOCTYPE HTML>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>画板</title>
+    <title>你画我猜</title>
     <link rel="stylesheet" type="text/css" href="./css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="./css/drawboard.css" />
+    <script type="text/javascript" src="./js/jquery.js"></script>
+    <script type="application/javascript" charset="utf-8"  src="./js/chat.js"></script>
     <script type="application/javascript" charset="utf-8"  src="./js/drawboard.js"></script>
 </head>
-<body>
-    <div class="noscript"><div style="color: #ff0000; font-size: 16pt;">Seems your browser doesn't support Javascript! Websockets rely on Javascript being enabled. Please enable
+<body style="background: url('img/blackbo.jpg');background-size:100%;">
+<div class="noscript"><div style="color: #ff0000; font-size: 16pt;">Seems your browser doesn't support Javascript! Websockets rely on Javascript being enabled. Please enable
     Javascript and reload this page!</div></div>
-    <div id="labelContainer"></div>
-    <div id="drawContainer" style="border:1px solid"></div>
-    <div id="console-container"></div>
-    <div style="clear: left;"></div>
+<div class="text-center">
+    <h1 style="position:relative;top:-30px;font-size:60px;font-family: 方正舒体;color:darkgray">你&nbsp;&nbsp;&nbsp;画&nbsp;&nbsp;&nbsp;我&nbsp;&nbsp;&nbsp;猜</h1>
+</div>
+<div id="labelContainer"></div>
+<div class="" style="display:block;opacity:0.9;position:relative;top:-40px;">
+    <div id="drawContainer" class="" style="margin:0px;display:block;border-radius: 20px"></div>
+    <div class="col-xs-4 form-group pull-right" style="height:500px;">
+        <div style="color:white">当前在线：<span id="onlineNumber">0</span></div>
+        <div id="messageBox" class="form-control" style="overflow-y:scroll;cursor:auto;height:100%;background-color:white;resize: none;border-radius:20px;" placeholder="未收到消息..." disabled="disabled"></div>
+        <div class="input-group" style="position:relative;top:5px;">
+            <input id="contentBox" class="form-control" style="border-radius:20px;  " placeholder="请输入后，点击发送" />
+            <span class="input-group-addon" style="padding:0;border-radius:20px;border:0px;background-color:black;">
+                <button class="btn btn-success" style="border-radius:20px;" onclick="sendMessage()">发送</button>
+            </span>
+        </div>
+    </div>
+</div>
+<br/>
+
+<div style="clear: left;"></div>
 
 
 </body>

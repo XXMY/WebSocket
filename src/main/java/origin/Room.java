@@ -124,7 +124,7 @@ public final class Room {
      * received from Players will be drawn onto this image.
      */
     private final BufferedImage roomImage =
-            new BufferedImage(900, 600, BufferedImage.TYPE_INT_RGB);
+            new BufferedImage(800, 500, BufferedImage.TYPE_INT_RGB);
     private final Graphics2D roomGraphics = roomImage.createGraphics();
 
 
