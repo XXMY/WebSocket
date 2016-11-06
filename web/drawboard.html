@@ -1,29 +1,38 @@
-
 <!DOCTYPE HTML>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>你画我猜</title>
-    <link rel="stylesheet" type="text/css" href="./css/bootstrap.css" />
-    <link rel="stylesheet" type="text/css" href="./css/drawboard.css" />
+    <link rel="stylesheet" type="text/css" href="./css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/drawboard.css"/>
     <script type="text/javascript" src="./js/jquery.js"></script>
-    <script type="application/javascript" charset="utf-8"  src="./js/chat.js"></script>
-    <script type="application/javascript" charset="utf-8"  src="./js/drawboard.js"></script>
+    <script type="text/javascript" src="js/jquery.nicescroll.js"></script>
+    <script type="application/javascript" charset="utf-8" src="./js/message.js"></script>
+    <script type="application/javascript" charset="utf-8" src="./js/chat.js"></script>
+    <script type="application/javascript" charset="utf-8" src="./js/drawboard.js"></script>
 </head>
 <body style="background: url('img/blackbo.jpg');background-size:100%;">
-<div class="noscript"><div style="color: #ff0000; font-size: 16pt;">Seems your browser doesn't support Javascript! Websockets rely on Javascript being enabled. Please enable
-    Javascript and reload this page!</div></div>
+<div class="noscript">
+    <div style="color: #ff0000; font-size: 16pt;">Seems your browser doesn't support Javascript! Websockets rely on
+        Javascript being enabled. Please enable
+        Javascript and reload this page!
+    </div>
+</div>
 <div class="text-center">
-    <h1 style="position:relative;top:-30px;font-size:60px;font-family: 方正舒体;color:darkgray">你&nbsp;&nbsp;&nbsp;画&nbsp;&nbsp;&nbsp;我&nbsp;&nbsp;&nbsp;猜</h1>
+    <h1 style="font-size:60px;font-family: 方正舒体;color:darkgray">你&nbsp;&nbsp;&nbsp;画&nbsp;&nbsp;&nbsp;我&nbsp;&nbsp;&nbsp;猜</h1>
 </div>
 <div id="labelContainer"></div>
-<div class="" style="display:block;opacity:0.9;position:relative;top:-40px;">
+<div class="" style="display:block;opacity:0.9;">
     <div id="drawContainer" class="" style="margin:0px;display:block;border-radius: 20px"></div>
-    <div class="col-xs-4 form-group pull-right" style="height:500px;">
+    <div class="col-xs-4 form-group pull-right" style="height:460px;">
         <div style="color:white">当前在线：<span id="onlineNumber">0</span></div>
-        <div id="messageBox" class="form-control" style="overflow-y:scroll;cursor:auto;height:100%;background-color:white;resize: none;border-radius:20px;" placeholder="未收到消息..." disabled="disabled"></div>
+        <div id="messageBox" class="form-control"
+             style="overflow:hidden;cursor:auto;height:100%;background-color:white;resize: none;border-radius:5px;"
+             placeholder="未收到消息..." disabled="disabled">
+
+        </div>
         <div class="input-group" style="position:relative;top:5px;">
-            <input id="contentBox" class="form-control" style="border-radius:20px;  " placeholder="请输入后，点击发送" />
+            <input id="contentBox" class="form-control" style="border-radius:20px;  " placeholder="请输入后，点击发送"/>
             <span class="input-group-addon" style="padding:0;border-radius:20px;border:0px;background-color:black;">
                 <button class="btn btn-success" style="border-radius:20px;" onclick="sendMessage()">发送</button>
             </span>
@@ -31,9 +40,24 @@
     </div>
 </div>
 <br/>
+<script>
+    $(document).ready(function(){
+        $("#messageBox").niceScroll({
+            cursorcolor : "black",
+            cursoropacitymax : 1,
+            touchbehavior : false,
+            cursorwidth : "8px",
+            cursorborder : "0",
+            cursorborderradius : "20px",
+            autohidemode : false
+        });
 
-<div style="clear: left;"></div>
-
-
+        $("#contentBox").bind("keyup",function(event){
+            if(event.keyCode == "13"){
+                sendMessage();
+            }
+        })
+    });
+</script>
 </body>
 </html>

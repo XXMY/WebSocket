@@ -2,15 +2,14 @@
  * Created by Cfw on 2016/9/10.
  */
 var webSocket;
-var CLIENT_MSG = 1;
-var SERVER_MSG = 2;
-//info("<div class='alert alert-info' role='alert'>WebSocket is opening...</div>");
+var userName;
 function webSocketConnect(){
-    //webSocket = new WebSocket("ws://echo.websocket.org/echo");
     webSocket = new WebSocket("ws://localhost:8080/echo");
     webSocket.onopen = function(){
         while(true){
             if(webSocket.readyState === WebSocket.OPEN){
+                var message = new Message(userName,1);
+                sendMessage(message);
                 var information = "Server connected!";
                 var infoBar = "<div class='alert alert-info' role='alert'>"+ information +"</div>";
                 info(infoBar);
@@ -24,7 +23,9 @@ function webSocketConnect(){
     webSocket.onmessage = function(evt){
         var infoBar = "<div class='alert alert-success' role='alert'>Receiving from Server! </div>";
         info(infoBar);
-        log(evt.data,SERVER_MSG);
+        var jsonMessage = eval("("+evt.data+")");
+        var message = new Message(jsonMessage.userName,jsonMessage.type,jsonMessage.content,jsonMessage.count);
+        log(message);
     }
 
     webSocket.onclose = function(evt){
@@ -42,7 +43,7 @@ function webSocketConnect(){
     webSocket.onerror = function(evt) {
         var infoBar = "<div class='alert alert-danger' role='alert'>WebSocket occurred an error!</div>";
         info(infoBar);
-        log("Occurred an error!");
+        console.log("Occurred an error!");
     }
 }
 
@@ -52,10 +53,14 @@ function webSocketClose(){
     }
 }
 
-function sendMessage(){
-    var message = $("#contentBox").val();
-    log(message,CLIENT_MSG);
-    webSocket.send(message);
+function sendMessage(message){
+    if(message == ""||"undefined"==typeof(message)){
+        var content = $("#contentBox").val();
+        message = new Message(userName,2,content);
+    }
+    $("#contentBox").val("");
+    $("#contentBox").focus();
+    webSocket.send(message.getJson());
 }
 
 function info(infoBar){
@@ -65,16 +70,26 @@ function info(infoBar){
     $("#information").animate({top:'0px'},1000);
 }
 
-function log(message,type){
-    if("undefined" != typeof(type)){
-        if(type == CLIENT_MSG){
-            message = "<span style='color:green'>Client:</span> " + message;
-        }else if(type == SERVER_MSG){
-            message = "<span style='color:darkred'>Server:</span> " + message;
+function log(message){
+    var element = "";
+    if("undefined" != typeof(message.getType())){
+        if(message.getType() == 1){
+            element = "<span style='color:#ec971f'>"+message.getUserName()+"</span> 来到房间";
+            $("#onlineNumber").text(message.getCount());
+        }else if(message.getType() == 2){
+            element = "<span style='color:#285e8e'>"+message.getUserName()+"</span>: " + message.getContent();
         }
     }
-    console.log(message);
-    $("#messageBox").append(message+"<br/>");
-}
+    console.log(message.getJson());
+    $("#messageBox").append(element+"<br/>");
+    $("#messageBox").getNiceScroll(0).scrollTop($("#messageBox").get(0).scrollHeight);
 
-webSocketConnect();
+}
+function register(){
+    var name = prompt("请输入你的名字","");
+    if(name != null && name != ""){
+        userName = name;
+        webSocketConnect();
+    }
+}
+register();

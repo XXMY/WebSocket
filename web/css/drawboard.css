@@ -27,7 +27,7 @@ body {
 #drawContainer {
     float: left;
     display: none;
-    margin-right: 25px;
+    /*margin-right: 25px;*/
 }
 
 #drawContainer canvas {

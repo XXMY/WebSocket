@@ -529,8 +529,10 @@ document.addEventListener("DOMContentLoaded", function() {
             canvasDisplay.addEventListener("mousedown", canvasMouseDownHandler, false);
 
             canvasMouseMoveHandler = function(e) {
-                var mouseX = e.pageX - canvasDisplay.offsetLeft-9;
-                var mouseY = e.pageY - canvasDisplay.offsetTop-70;
+                var mouseX = e.pageX - canvasDisplay.offsetLeft;
+                var mouseY = e.pageY - canvasDisplay.offsetTop;
+                /*var mouseX = e.pageX - canvasDisplay.offsetLeft-9;
+                var mouseY = e.pageY - canvasDisplay.offsetTop-70;*/
 
                 if (mouseDown) {
                     var drawType = availableDrawTypes[currentDrawTypeIndex];
