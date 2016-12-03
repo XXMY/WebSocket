@@ -25,6 +25,7 @@ public class ChattingController {
     public void greeting(Message message) throws Exception {
 
         this.chattingService.dealMessage(message);
+
     }
 
 }

@@ -2,6 +2,7 @@ package spring.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,8 @@ public class ChattingServiceImpl implements ChattingService {
         Map<String,Object> map = new HashMap<>();
         map.put(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON);
         while((message = MessageBuffer.poll()) != null){
-            this.simpMessagingTemplate.convertAndSendToUser(message.getUserName(),"/topic/greetings",message,map);
+            //this.simpMessagingTemplate.convertAndSendToUser(message.getUserName(),"/topic/greetings",message,map);
+            this.simpMessagingTemplate.convertAndSend("/topic/greetings",message,map);
         }
     }
 }
