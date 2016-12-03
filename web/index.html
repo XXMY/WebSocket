@@ -63,7 +63,7 @@
     //info("<div class='alert alert-info' role='alert'>WebSocket is opening...</div>");
     function webSocketConnect(){
 		
-        var socket = new SockJS("/spring");
+        var socket = new SockJS("/chatting");
         stompClient = Stomp.over(socket);
 		
         stompClient.connect({}, function(frame) {

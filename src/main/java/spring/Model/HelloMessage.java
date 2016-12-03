@@ -1,4 +1,4 @@
-package spring;
+package spring.Model;
 
 /**
  * Created by Duskrain on 2016/8/31.
